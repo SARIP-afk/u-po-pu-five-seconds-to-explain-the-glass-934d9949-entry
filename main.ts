@@ -23,12 +23,17 @@ const LINE =
 // Runtime mirror of the sealed gate: refuse to write anything invalid
 // rather than submit a file the judge would score 0. The judge compares
 // exactly what the file holds, so a stray line break inside the line is a
-// failure too.
+// failure too. The bounty also forbids an apology or a confession, so a
+// line containing one is refused here as well — a cat that apologises has
+// lost the argument before it starts.
 if (LINE.length < 1 || LINE.length > 200 || LINE.trim().length === 0) {
   throw new Error(`entry line fails the 1-200 character gate: ${LINE.length} chars`);
 }
 if (/[\r\n]/.test(LINE)) {
   throw new Error("entry line must be a single sentence on one line");
+}
+if (/\b(sorry|apolog(?:y|ise|ize)|my fault|my bad|i confess|forgive me)\b/i.test(LINE)) {
+  throw new Error("entry line must not apologise or confess");
 }
 
 const outDir = process.env.MAKEFUN_OUTPUT_DIR;
